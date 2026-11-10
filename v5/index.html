@@ -339,6 +339,7 @@ const user = auth.currentUser;
 
 if(!user){
 alert("Google 로그인 먼저 해주세요.");
+calendar.unselect();
 return;
 }
 
@@ -349,6 +350,10 @@ if(!confirm("이 시간에 예약하시겠습니까?")){
 calendar.unselect();
 return;
 }
+
+// Clear the selection highlight once booking finishes (success, conflict
+// or error); with unselectAuto:false it otherwise covers the new event's title.
+try {
 
 const snapshot = await db.collection("bookings")
 .where("room","==",currentRoom)
@@ -388,6 +393,10 @@ backgroundColor:color,
 borderColor:color,
 extendedProps:{email:user.email}
 });
+
+} finally {
+calendar.unselect();
+}
 
 },
 
